@@ -7,9 +7,8 @@ import java.util.List;
 public class Cluster {
 
     private static int clustersTotal = 0;
-
     private int clusterID;
-
+    private Point centroid;
     private List<Point> pointList;
 
     public Cluster() {
@@ -25,13 +24,36 @@ public class Cluster {
         pointList.add(p);
     }
 
+    public void clearCluster() {
+        this.pointList = new ArrayList<>();
+    }
+
+    public boolean isEmpty() {
+        return this.pointList.size() == 0;
+    }
+
+    public Point getCentroid() {
+        return centroid;
+    }
+
+    public void setCentroid(Point centroid) {
+        this.centroid = centroid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("ClusterID: %s\n", this.clusterID));
-        this.pointList.forEach((point) -> {
-            sb.append(String.format("x: %s y: %s\n",  point.getX(), point.getY()));
-        });
+        if (this.pointList.isEmpty()) {
+            sb.append("This cluster is empty.");
+        } else {
+            for (Point p : pointList) {
+                sb.append(String.format("x: %s y: %s\n",  p.getX(), p.getY()));
+            }
+            if (centroid != null) {
+                sb.append(String.format("Centroid: x: %-3s y: %-3s", centroid.getX(), centroid.getY()));
+            }
+        }
         return sb.toString();
     }
 
