@@ -1,8 +1,11 @@
 ==input1.txt,k=2==
+java kmeans 2 input1.txt
 
 ==input2.txt,k=2==
+java kmeans 2 input2.txt
 
 ==input3.txt,k=3==
+java kmeans 3 input3.txt
 
 ==input4.txt,k=4==
-
+java kmeans 4 input4.txt
