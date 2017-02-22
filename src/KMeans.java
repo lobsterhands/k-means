@@ -101,77 +101,55 @@ public class KMeans {
         }
 
         KMeans kmeans = new KMeans(args[0], args[1]);
+
+        // Initialize a centroid in each cluster then clear the cluster
         Cluster[] clusters = kmeans.getClusterArray();
         for (Cluster c : clusters) {
-            System.out.println(c);
             c.calculateInitialCentroid();
-            System.out.println(c.getCentroid());
+            c.clearCluster();
         }
 
-//        List<Point> kPointList = kmeans.getPointList();
-//
-        // Randomly place an initial centroid for each cluster
-//        for (int i = 0; i < clusters.length; i++) {
-//            Point newCentroid;
-//            boolean isUnique;
-//            // Ensure random centroids are not placed at identical coordinates
-//            do {
-//                isUnique = true;
-//                int randomX = (int) Math.floor(Math.random() * kmeans.getMax_x());
-//                int randomY = (int) Math.floor(Math.random() * kmeans.getMax_y());
-//                newCentroid = new Point(randomX, randomY);
-//                if (i > 0) {
-//                   for (int j = 0; j < i; j++) {
-//                        if (newCentroid.getX() == clusters[j].getCentroid().getX() &&
-//                                newCentroid.getY() == clusters[j].getCentroid().getY()) {
-//                            isUnique = false;
-//                            break;
-//                        }
-//                    }
-//                }
-//            } while (!isUnique);
-//            clusters[i].setCentroid(newCentroid); // new centroid is unique, so assign it to a cluster
-//        }
-//
-//
-//        // Assign each point to a cluster by distance to nearest centroid
-//        for (Point point : kPointList) {
-//            System.out.println(point);
-//            // Set minDistance to distance from first cluster's centroid
-//            double minDistance = point.calcDistanceToCentroid(clusters[0].getCentroid());
-//            int clusterNum = clusters[0].getClusterID(); // Track which cluster the point belongs to
-//
-//
-//            System.out.println("clusternum: " + clusterNum);
-//            point.setClusterGroupNum(clusterNum);
-//
-//            for (int i = 1; i < clusters.length; i++) {
-//                double distance = point.calcDistanceToCentroid(clusters[i].getCentroid());
-//                System.out.println("min dist: " + minDistance);
-//                System.out.println("comp dist: " + distance);
-//                if (distance < minDistance) {
-//                    System.out.println("Minimum updated.");
-//                    minDistance = distance;
-//                    clusterNum = clusters[i].getClusterID();
-//                    System.out.println("clusternum: " + clusterNum);
-//                } else {
-//                    System.out.println("Existing minimum stays.");
-//                }
-//            }
-//            point.setClusterGroupNum(clusterNum);
-//            clusters[clusterNum - 1].addPointToList(point);
-//            System.out.println(point);
-//            System.out.println();
-//        }
-//
-//        for (Cluster c : clusters) {
-//            System.out.println(c);
-//            System.out.println();
-//        }
-//
-//
-//        for (Cluster c : clusters) {
-//            System.out.println(c.getCentroid());
-//        }
+        boolean centroidMoved = true;
+        while (centroidMoved) {
+            for (Cluster c : clusters) {
+                c.clearCluster();
+            }
+
+            // Assign each point to a cluster by distance to nearest centroid
+            for (Point point : kmeans.getPointList()) {
+                // Set minDistance to distance from first cluster's centroid
+                double minDistance = point.calcDistanceToCentroid(clusters[0].getCentroid());
+                int clusterNum = clusters[0].getClusterID(); // Track which cluster the point belongs to
+                point.setClusterGroupNum(clusterNum);
+
+                for (int i = 1; i < clusters.length; i++) {
+                    double distance = point.calcDistanceToCentroid(clusters[i].getCentroid());
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        clusterNum = clusters[i].getClusterID();
+                    }
+                }
+                point.setClusterGroupNum(clusterNum);
+                clusters[clusterNum - 1].addPointToList(point);
+            }
+
+            for (Cluster c : clusters) {
+                c.updateCentroid();
+            }
+
+            boolean atLeastOneChanged = false;
+            for (Cluster c : clusters) {
+                if (c.getCentroidDistanceChange() > 0) {
+                    atLeastOneChanged = true;
+                    break;
+                }
+            }
+            centroidMoved = atLeastOneChanged;
+        }
+
+        System.out.println("Final Clusters:");
+        for (Cluster c : clusters) {
+            System.out.println(c);
+        }
     }
 }
