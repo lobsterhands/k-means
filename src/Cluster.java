@@ -78,6 +78,19 @@ public class Cluster {
         centroidDistanceChange = Math.sqrt((Math.pow((avgX - oldCentroid.getX()), 2) + Math.pow(avgY - oldCentroid.getY(), 2)));
     }
 
+    public String printPointsInCluster() {
+        StringBuilder sb = new StringBuilder();
+        if (pointList.size() == 0) {
+            sb.append(String.format("Cluster %s is empty.\n", clusterID));
+        } else {
+            for (Point p : pointList) {
+                sb.append(String.format("%-7s %-7s %s\n", p.getX(), p.getY(), clusterID));
+            }
+        }
+        return sb.toString();
+    }
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -91,11 +104,9 @@ public class Cluster {
             sb.append("This cluster is empty.");
         } else {
             for (Point p : pointList) {
-//                sb.append(String.format("x: %s y: %s\n",  p.getX(), p.getY()));
                 sb.append(String.format("%s\n", p));
             }
         }
         return sb.toString();
     }
-
 }
