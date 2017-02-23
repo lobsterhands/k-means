@@ -1,7 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by Lyle on 2/21/2017.
@@ -12,8 +16,13 @@ public class KMeans {
     private String filePath;
     private List<Point> pointList;
     private Cluster[] clusterArray;
+    private String outFile = "output.txt";
 
     private KMeans(String kValue, String fileName) {
+        if (Integer.parseInt(kValue) < 2) {
+            System.err.println("K value must be at least 2");
+            System.exit(1);
+        }
         this.kValue = Integer.parseInt(kValue);
         this.pointList = new ArrayList<>();
         this.clusterArray = new Cluster[Integer.parseInt(kValue)];
@@ -67,7 +76,17 @@ public class KMeans {
     }
 
     private void writeResultsToFile() {
-        System.out.println("Write me");
+        try {
+            FileWriter fw = new FileWriter(outFile);
+
+            for (Cluster c : clusterArray) {
+                fw.write(c.printPointsInCluster());
+            }
+
+            fw.close();
+        } catch (IOException e) {
+            System.err.println("Error writing to file. " + e);
+        }
     }
 
     public static void main(String[] args) {
@@ -130,7 +149,6 @@ public class KMeans {
         for (Cluster c : clusters) {
             System.out.println(c);
         }
-
         kmeans.writeResultsToFile();
     }
 }
