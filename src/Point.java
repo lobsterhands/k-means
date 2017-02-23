@@ -1,6 +1,3 @@
-/**
- * Created by wally on 2/21/17.
- */
 public class Point {
     private double x;
     private double y;
@@ -12,7 +9,6 @@ public class Point {
         this.y = y;
         this.clusterGroupNum = 0;
     }
-
 
     public double getX() {
         return x;

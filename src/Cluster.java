@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by wally on 2/21/17.
- */
 public class Cluster {
 
     private static int clustersTotal = 0;
@@ -94,7 +91,8 @@ public class Cluster {
             sb.append("This cluster is empty.");
         } else {
             for (Point p : pointList) {
-                sb.append(String.format("x: %s y: %s\n",  p.getX(), p.getY()));
+//                sb.append(String.format("x: %s y: %s\n",  p.getX(), p.getY()));
+                sb.append(String.format("%s\n", p));
             }
         }
         return sb.toString();

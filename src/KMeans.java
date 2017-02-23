@@ -7,19 +7,22 @@ import java.util.*;
  * Created by Lyle on 2/21/2017.
  */
 public class KMeans {
-    private int k;
+    private int kValue;
+    private String fileName;
     private String filePath;
     private List<Point> pointList;
-    private int max_x = 0; // max values used to give max range for centroid placement
-    private int max_y = 0;
     private Cluster[] clusterArray;
 
-    private KMeans(String k, String fileName) {
-        this.k = Integer.parseInt(k);
+    private KMeans(String kValue, String fileName) {
+        this.kValue = Integer.parseInt(kValue);
         this.pointList = new ArrayList<>();
-        this.clusterArray = new Cluster[this.k];
+        this.clusterArray = new Cluster[Integer.parseInt(kValue)];
+        this.fileName = fileName;
+    }
+
+    private void init() {
         // Create k clusters
-        for (int i = 0; i < this.k; i++) {
+        for (int i = 0; i < kValue; i++) {
             Cluster c = new Cluster();
             clusterArray[i] = c;
         }
@@ -28,35 +31,25 @@ public class KMeans {
         URL url = ClassLoader.getSystemClassLoader().getResource(fileName);
         if (url != null) {
             this.filePath = url.getFile();
-        } else {
-            System.err.println("The file <" + fileName + "> could not be found.");
-            System.exit(1);
         }
 
         // Read file passed in as arg[1]
         try {
-            Scanner scan = new Scanner(new File(url.getFile()));
+            Scanner scan = new Scanner(new File(filePath));
             scan.useDelimiter("\n");
 
             // Parse the file and add points to the list of points with a randomly set cluster association
-            // TODO: keep randomly set cluster association? keep attrib on kmeans?
             while (scan.hasNext()) {
-                // Split the line by white space between values
+                // Split the line by white space between values; Create new points from values and add to points list
                 String[] coordinatesXY = scan.next().split("\\s+");
-
                 int x = Integer.parseInt(coordinatesXY[0]);
-                if (x > max_x) {
-                    max_x = x;
-                }
                 int y = Integer.parseInt(coordinatesXY[1]);
-                if (y > max_y) {
-                    max_y = y;
-                }
-
                 Point p = new Point(x, y);
-                p.setClusterGroupNum((int) Math.floor(Math.random() * this.k + 1));
-                addPointToList(p);
-                clusterArray[p.getClusterGroupNum() - 1].addPointToList(p);
+                pointList.add(p);
+
+                // Assign each point to a randomly selected cluster to calculate initial centroids from data points
+                int randomCluster = (int) Math.floor(Math.random() * kValue);
+                clusterArray[randomCluster].addPointToList(p);
             }
             scan.close();
         } catch (FileNotFoundException | NullPointerException e) {
@@ -65,42 +58,27 @@ public class KMeans {
         }
     }
 
-    private String getFilePath() {
-        return filePath;
-    }
-
-    private int getK() {
-        return k;
-    }
-
     private Cluster[] getClusterArray() {
         return clusterArray;
-    }
-
-    private void addPointToList(Point p) {
-        pointList.add(p);
     }
 
     private List<Point> getPointList() {
         return pointList;
     }
 
-    public int getMax_x() {
-        return max_x;
-    }
-
-    public int getMax_y() {
-        return max_y;
+    private void writeResultsToFile() {
+        System.out.println("Write me");
     }
 
     public static void main(String[] args) {
         // Ensure correct number of arguments are passed
         if (args.length != 2) {
-            System.err.println("Usage: java kmeans <k number> <filename.txt>");
+            System.err.println("Usage: java kmeans <kValue number> <filename.txt>");
             System.exit(1);
         }
 
         KMeans kmeans = new KMeans(args[0], args[1]);
+        kmeans.init();
 
         // Initialize a centroid in each cluster then clear the cluster
         Cluster[] clusters = kmeans.getClusterArray();
@@ -117,11 +95,11 @@ public class KMeans {
 
             // Assign each point to a cluster by distance to nearest centroid
             for (Point point : kmeans.getPointList()) {
-                // Set minDistance to distance from first cluster's centroid
+                // Calculate point's distance from first cluster's centroid
                 double minDistance = point.calcDistanceToCentroid(clusters[0].getCentroid());
-                int clusterNum = clusters[0].getClusterID(); // Track which cluster the point belongs to
-                point.setClusterGroupNum(clusterNum);
+                int clusterNum = clusters[0].getClusterID(); // Track which cluster is associated with minDistance
 
+                // Find which cluster point belongs to (the one with the nearest centroid)
                 for (int i = 1; i < clusters.length; i++) {
                     double distance = point.calcDistanceToCentroid(clusters[i].getCentroid());
                     if (distance < minDistance) {
@@ -129,6 +107,7 @@ public class KMeans {
                         clusterNum = clusters[i].getClusterID();
                     }
                 }
+                // Add the point to the cluster having the nearest centroid
                 point.setClusterGroupNum(clusterNum);
                 clusters[clusterNum - 1].addPointToList(point);
             }
@@ -151,5 +130,7 @@ public class KMeans {
         for (Cluster c : clusters) {
             System.out.println(c);
         }
+
+        kmeans.writeResultsToFile();
     }
 }
