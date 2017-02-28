@@ -65,7 +65,6 @@ public class Cluster {
     public void updateCentroid() {
         if (pointList.size() != 0) {
             Point oldCentroid = centroid;
-            System.out.println("OldCentroid: " + oldCentroid);
             double sumX = 0;
             double sumY = 0;
             int nPoints = 0;
@@ -77,10 +76,8 @@ public class Cluster {
             double avgX = sumX / nPoints;
             double avgY = sumY / nPoints;
             this.centroid = new Point(avgX, avgY);
-            System.out.println("New Centroid: " + centroid + " and OldCentroid: " + oldCentroid);
 
             centroidDistanceChange = Math.sqrt((Math.pow((avgX - oldCentroid.getX()), 2) + Math.pow(avgY - oldCentroid.getY(), 2)));
-            System.out.println("Distance changed: " + centroidDistanceChange);
         }
     }
 
@@ -95,7 +92,6 @@ public class Cluster {
         }
         return sb.toString();
     }
-
 
     @Override
     public String toString() {

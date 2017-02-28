@@ -58,7 +58,6 @@ public class KMeans {
 
                 // Assign each point to a randomly selected cluster to calculate initial centroids from data points
                 int randomCluster = (int) Math.floor(Math.random() * kValue);
-                System.out.println("Random Cluster number: " + randomCluster);
                 clusterArray[randomCluster].addPointToList(p);
             }
             scan.close();
@@ -85,6 +84,7 @@ public class KMeans {
             }
 
             fWriter.close();
+            System.out.println("Results written to " + outFile);
         } catch (IOException e) {
             System.err.println("Error writing to file. " + e);
         }
@@ -145,10 +145,6 @@ public class KMeans {
             centroidMoved = atLeastOneChanged;
         }
 
-        System.out.println("Final Clusters:");
-        for (Cluster c : clusters) {
-            System.out.println(c);
-        }
         kmeans.writeResultsToFile();
     }
 }

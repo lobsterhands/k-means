@@ -18,10 +18,6 @@ public class Point {
         return y;
     }
 
-    public int getClusterGroupNum() {
-        return clusterGroupNum;
-    }
-
     public void setClusterGroupNum(int clusterGroupNum) {
         this.clusterGroupNum = clusterGroupNum;
     }
