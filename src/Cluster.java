@@ -31,20 +31,8 @@ public class Cluster {
         this.pointList = new ArrayList<>();
     }
 
-    public boolean isEmpty() {
-        return pointList.size() == 0;
-    }
-
-    public int getSize() {
-        return pointList.size();
-    }
-
     public Point getCentroid() {
         return centroid;
-    }
-
-    public void setCentroid(Point centroid) {
-        this.centroid = centroid;
     }
 
     public void calculateInitialCentroid() {

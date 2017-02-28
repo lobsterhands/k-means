@@ -1,8 +1,5 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +10,6 @@ import java.util.Scanner;
 public class KMeans {
     private int kValue;
     private String fileName;
-    private String filePath;
     private List<Point> pointList;
     private Cluster[] clusterArray;
     private String outFile = "output.txt";
@@ -36,15 +32,10 @@ public class KMeans {
             clusterArray[i] = c;
         }
 
-        // Get the file path of the file by searching for filename
-        URL url = ClassLoader.getSystemClassLoader().getResource(fileName);
-        if (url != null) {
-            this.filePath = url.getFile();
-        }
-
-        // Read file passed in as arg[1]
+        // Read file passed in from arg[1] (fileName)
         try {
-            Scanner scan = new Scanner(new File(filePath));
+            Scanner scan = new Scanner (this.getClass().getResourceAsStream(fileName));
+
             scan.useDelimiter("\n");
 
             // Parse the file and add points to the list of points with a randomly set cluster association
@@ -61,7 +52,7 @@ public class KMeans {
                 clusterArray[randomCluster].addPointToList(p);
             }
             scan.close();
-        } catch (FileNotFoundException | NullPointerException e) {
+        } catch (NullPointerException e) {
             System.err.println("File not found.");
             e.printStackTrace();
         }
